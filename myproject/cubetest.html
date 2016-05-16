@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>three.js - cubetest</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body 
+            {
+                font-family: Monospace;
+                background-color: #f0f0f0;
+                margin: 0px;
+                overflow: hidden;
+            }
+            canvas
+            {
+                height: 600;
+                width: 600;
+            }
+        </style>
+    </head>
+    <body>
+
+        <script src="../lib/jquery-1.11.3.js" type="text/javascript"></script>
+        <script src="../build/three.min.js"></script>
+        <script src="../examples/js/libs/stats.min.js"></script>
+
+
+
+        <script>
+
+            var scene, camera, renderer;
+            var geometry, material, cube;
+            var container, stats;
+            var cubeNum;
+            var range = 200;
+            
+
+            function init() {
+
+                scene = new THREE.Scene();
+
+
+                camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+                camera.position.z = 1000;
+
+                geometry = new THREE.BoxGeometry( 200, 200, 200 );
+                material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true});
+                
+                
+                //cubeNum = 0;
+                
+
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize( window.innerWidth, window.innerHeight-50 );
+
+                document.body.appendChild( renderer.domElement );
+
+
+                container = document.createElement( 'div' );
+                document.body.appendChild( container );
+
+                
+                
+
+                console.log("init completed");
+            }
+
+
+            function addACube(geometry, material) 
+            {
+                cube = new THREE.Mesh( geometry, material );
+                cube.position.set(range*Math.random(), range*Math.random(), range*Math.random());
+
+                scene.add(cube);
+
+                cubeNum += 1;
+            }
+
+            function addNCube(geometry, material, n)
+            {
+                for (var i = 0; i<n; i++)
+                {
+                    addACube(geometry, material);
+                }
+            }
+
+            function animate() 
+            {
+                requestAnimationFrame( animate );
+
+                stats.begin();
+                renderer.render( scene, camera );
+                stats.end();
+
+            }
+
+
+
+
+            
+
+            var main = function()
+            {
+                init();
+
+                $("button").on("click", function (event)
+                {
+                    renderer.clear();
+                    //cubeNum = 0;
+                    console.log("button clicked");
+                    var newNum = parseInt($("#num").val());
+                    console.log(newNum);
+                    addNCube(geometry, material, newNum);
+                    //console.log(cubeNum);
+
+                    stats = new Stats();
+                    stats.domElement.style.position = 'absolute';
+                    stats.domElement.style.top = '600px';
+                    container.appendChild( stats.domElement );
+
+
+                    animate();
+                });
+            }
+
+
+            $(document).ready(main);
+
+        </script>
+
+    </body>
+
+
+    <h3>
+        <input type = "text" id = "num" value = "1">
+        <button>+</button>
+</h3>
+
+
+
+
+
+
+</html>
